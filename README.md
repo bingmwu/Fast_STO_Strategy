@@ -1,0 +1,1 @@
+# Fast_STO_Strategy
