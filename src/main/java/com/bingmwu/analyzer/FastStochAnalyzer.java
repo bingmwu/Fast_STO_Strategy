@@ -19,25 +19,34 @@ public class FastStochAnalyzer implements Analyzer {
 	@Override
 	public Prediction analyze() {
 		List<StochasticData> stochDataList = calculateFastStock();
+
 		return null;
 	}
 
 	protected List<StochasticData> calculateFastStock() {
 		List<StochasticData> stochDataList = new ArrayList<StochasticData>();
+
+		// calculate %K
 		for (int i = this.daysInPeriod - 1; i < this.tradingDataList.size(); i++) {
-			HighLowInThePeriod howAndLowInThePeriod = 
-					findHighAndLowInThePeriod(tradingDataList, i);
+			HighLowInThePeriod howAndLowInThePeriod = findHighAndLowInThePeriod(tradingDataList, i);
 			StochasticData stochData = new StochasticData();
-			stochData.percentageK = (this.tradingDataList.get(i).close - howAndLowInThePeriod.lowest) / 
-					(howAndLowInThePeriod.highest - howAndLowInThePeriod.lowest) * 100;
-			
+			stochData.percentageK = (this.tradingDataList.get(i).close - howAndLowInThePeriod.lowest)
+					/ (howAndLowInThePeriod.highest - howAndLowInThePeriod.lowest) * 100;
+
 			stochData.date = this.tradingDataList.get(i).endDate;
-			
+
 			stochDataList.add(stochData);
 		}
+
+		// calculate %D (3-day SMA of %K)
+		for (int i = 2; i < stochDataList.size(); i++) {
+			stochDataList.get(i).percentageD = (stochDataList.get(i - 2).percentageK
+					+ stochDataList.get(i - 1).percentageK + stochDataList.get(i).percentageK) / 3;
+		}
+		
 		return stochDataList;
 	}
-	
+
 	private HighLowInThePeriod findHighAndLowInThePeriod(List<DataItem> dataItemList, int endDayOfPeriod) {
 		HighLowInThePeriod highAndLow = new HighLowInThePeriod();
 		int beginDayOfPeriod = endDayOfPeriod - this.daysInPeriod + 1;
@@ -53,11 +62,11 @@ public class FastStochAnalyzer implements Analyzer {
 		}
 		return highAndLow;
 	}
-	
+
 	private class HighLowInThePeriod {
 		float highest;
 		float lowest;
 	}
-	
+
 	public static final int STOCHASTIC_PERIOD_14_DAYS_BY_DEFAULT = 14;
 }
