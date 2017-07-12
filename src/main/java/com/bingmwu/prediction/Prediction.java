@@ -1,9 +1,27 @@
 package com.bingmwu.prediction;
 
-import com.bingmwu.data.DATA_PERIOD_TYPE;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-public interface Prediction {
-	public float getSuccessRate();
-	public boolean isUp();
-	public DATA_PERIOD_TYPE getTimePeriod();
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class Prediction implements Serializable {
+
+	private static final long serialVersionUID = 3921337231939450260L;
+
+	public Prediction() {
+		this.successList = new ArrayList<Date>();
+		this.failedList = new ArrayList<Date>();
+	}
+
+	public float successRate;
+	public int numberOfSuccessPrediction;
+	public int numberOfFailedPrediction;
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	public List<Date> successList;
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+	public List<Date> failedList;
 }

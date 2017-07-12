@@ -6,6 +6,7 @@ import java.util.List;
 import com.bingmwu.analyzer.data.StochasticData;
 import com.bingmwu.data.DataItem;
 import com.bingmwu.prediction.Prediction;
+import com.bingmwu.prediction.Predictor;
 
 public class FastStochAnalyzer implements Analyzer {
 	int daysInPeriod;
@@ -17,19 +18,24 @@ public class FastStochAnalyzer implements Analyzer {
 	}
 
 	@Override
-	public Prediction analyze() {
+	public Prediction analyze(Predictor predictor) {
 		List<StochasticData> stochDataList = calculateFastStock();
 
-		return null;
+		return predictor.predict(tradingDataList, stochDataList);
 	}
 
 	protected List<StochasticData> calculateFastStock() {
 		List<StochasticData> stochDataList = new ArrayList<StochasticData>();
 
 		// calculate %K
-		for (int i = this.daysInPeriod - 1; i < this.tradingDataList.size(); i++) {
-			HighLowInThePeriod howAndLowInThePeriod = findHighAndLowInThePeriod(tradingDataList, i);
+		for (int i = 0; i < this.tradingDataList.size(); i++) {
 			StochasticData stochData = new StochasticData();
+			if (i < this.daysInPeriod - 1) {
+				stochDataList.add(stochData);
+				continue;
+			}
+			
+			HighLowInThePeriod howAndLowInThePeriod = findHighAndLowInThePeriod(tradingDataList, i);
 			stochData.percentageK = (this.tradingDataList.get(i).close - howAndLowInThePeriod.lowest)
 					/ (howAndLowInThePeriod.highest - howAndLowInThePeriod.lowest) * 100;
 
