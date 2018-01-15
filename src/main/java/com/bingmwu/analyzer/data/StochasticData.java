@@ -1,9 +1,9 @@
 package com.bingmwu.analyzer.data;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class StochasticData {
-	public Date date;
+	public LocalDate date;
 	public float percentageK;
 	public float percentageD;
 }

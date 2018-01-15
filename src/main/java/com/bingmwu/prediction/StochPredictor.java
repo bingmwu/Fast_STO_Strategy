@@ -6,7 +6,7 @@ import com.bingmwu.analyzer.data.StochasticData;
 import com.bingmwu.data.DATA_PERIOD_TYPE;
 import com.bingmwu.data.DataItem;
 
-public class FastStochPredictor implements Predictor {
+public class StochPredictor implements Predictor {
 	STOCK_MOVE_DIRECTION direction;
 	// the lowest value of %K indicator when predicting UP,
 	// or the highest value of %K indicator when predicting DOWN
@@ -14,11 +14,14 @@ public class FastStochPredictor implements Predictor {
 	// number of days in the prediction, for example, the stock moves higher
 	// after 2 days (3 day range)
 	int dayRangeInPrediction;
-	// For UP prediction, if %K > waterMark, count the day for prediction, even if %D > %K
-	// For DOWN prediction, if %K < waterMark, count the day for prediction, even if %D < %K
+	// For UP prediction, if %K > waterMark, count the day for prediction, even
+	// if %D > %K
+	// For DOWN prediction, if %K < waterMark, count the day for prediction,
+	// even if %D < %K
 	float waterMark;
 
-	public FastStochPredictor(STOCK_MOVE_DIRECTION direction, float percentageK, int dayRangeInPrediction, float waterMark) {
+	public StochPredictor(STOCK_MOVE_DIRECTION direction, float percentageK, int dayRangeInPrediction,
+			float waterMark) {
 		this.direction = direction;
 		this.percentageK = percentageK;
 		this.dayRangeInPrediction = dayRangeInPrediction;
@@ -46,10 +49,10 @@ public class FastStochPredictor implements Predictor {
 						|| stochDataList.get(i).percentageK > this.waterMark)
 						&& i < stochDataList.size() - dayRangeInPrediction + 1) {
 					if (tradingDataList.get(i).close < tradingDataList.get(i + dayRangeInPrediction - 1).close) {
-						prediction.successList.add(stochDataList.get(i).date);
+						prediction.successList.add(java.sql.Date.valueOf(stochDataList.get(i).date));
 						prediction.numberOfSuccessPrediction++;
 					} else {
-						prediction.failedList.add(stochDataList.get(i).date);
+						prediction.failedList.add(java.sql.Date.valueOf(stochDataList.get(i).date));
 						prediction.numberOfFailedPrediction++;
 					}
 				}
@@ -58,10 +61,10 @@ public class FastStochPredictor implements Predictor {
 						|| stochDataList.get(i).percentageK < this.waterMark)
 						&& i < stochDataList.size() - dayRangeInPrediction + 1) {
 					if (tradingDataList.get(i).close > tradingDataList.get(i + dayRangeInPrediction - 1).close) {
-						prediction.successList.add(stochDataList.get(i).date);
+						prediction.successList.add(java.sql.Date.valueOf(stochDataList.get(i).date));
 						prediction.numberOfSuccessPrediction++;
 					} else {
-						prediction.failedList.add(stochDataList.get(i).date);
+						prediction.failedList.add(java.sql.Date.valueOf(stochDataList.get(i).date));
 						prediction.numberOfFailedPrediction++;
 					}
 				}
@@ -71,5 +74,12 @@ public class FastStochPredictor implements Predictor {
 				/ (prediction.numberOfSuccessPrediction + prediction.numberOfFailedPrediction);
 
 		return prediction;
+	}
+
+	@Override
+	public Prediction predict(List<DataItem> tradingDataList, List<StochasticData> dailyStochDataList,
+			List<StochasticData> weeklyStochDataList) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

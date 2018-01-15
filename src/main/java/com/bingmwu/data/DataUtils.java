@@ -3,18 +3,14 @@ package com.bingmwu.data;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings("WeakerAccess")
 public class DataUtils {
 	private static Logger logger = LoggerFactory.getLogger(DataUtils.class);
 
@@ -92,14 +88,9 @@ public class DataUtils {
 		return dataItem;
 	}
 
-	public static Date parseDate(String field) {
-		try {
-			return yahooDateFormat.parse(field);
-		} catch (ParseException e) {
-			logger.error("Error parsing Data: " + field);
-			throw new IllegalStateException("Error parsing Data: " + field);
-		}
+	public static LocalDate parseDate(String field) {
+		return LocalDate.parse(field, yahooDateFormat);
 	}
 
-	public static final SimpleDateFormat yahooDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+	public static final DateTimeFormatter yahooDateFormat = DateTimeFormatter.ofPattern("M/d/yyyy");
 }

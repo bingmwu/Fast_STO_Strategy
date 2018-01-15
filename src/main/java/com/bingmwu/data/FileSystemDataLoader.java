@@ -19,8 +19,8 @@ public class FileSystemDataLoader implements DataLoader {
 	}
 
 	@Override
-	public DataCombo loadData() {
-		DataCombo data = null;
+	public List<DataItem> loadData() {
+		List<DataItem> dataList = null;
 		String extension = ".csv";
 		List<String> names = DataUtils.listFiles(extension, paths);
 		if (names == null) {
@@ -29,26 +29,24 @@ public class FileSystemDataLoader implements DataLoader {
 		}
 		for (String name : names) {
 			logger.info("Reading file " + name);
-			data = createDataSet(name);
+			dataList = createDataSet(name);
 		}
-		if (!data.hasData()) {
+		if (dataList == null || dataList.size() == 0) {
 			logger.error("No data read from paths: " + paths);
 			throw new IllegalStateException("No files to read!");
 		}
-		return data;
+		return dataList;
 
 	}
 
-	private DataCombo createDataSet(String name) {
+	private List<DataItem> createDataSet(String name) {
 		File file = new File(name);
 		dataFileSanityCheck(file);
 		try (BufferedReader br = new BufferedReader(new FileReader(file))) {
 			List<DataItem> lines = DataUtils.createLineList(br);
 			logger.info("Got " + lines.size() + " lines of daily Data");
 
-			DataCombo dataCombo = new DataCombo();
-			dataCombo.dailyDataList = lines;
-			return dataCombo;
+			return lines;
 		} catch (IOException e) {
 			logger.error("Unable to process file: " + name);
 			throw new IllegalStateException("Unable to process file: " + name);

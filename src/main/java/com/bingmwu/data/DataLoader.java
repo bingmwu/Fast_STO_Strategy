@@ -1,5 +1,7 @@
 package com.bingmwu.data;
 
+import java.util.List;
+
 public interface DataLoader {
-	DataCombo loadData();
+	List<DataItem> loadData();
 }

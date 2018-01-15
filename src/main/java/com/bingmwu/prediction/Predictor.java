@@ -12,4 +12,7 @@ public interface Predictor {
 	public DATA_PERIOD_TYPE getTimePeriod();
 
 	public Prediction predict(List<DataItem> tradingDataList, List<StochasticData> stochDataList);
+
+	public Prediction predict(List<DataItem> tradingDataList, List<StochasticData> dailyStochDataList,
+			List<StochasticData> weeklyStochDataList);
 }
